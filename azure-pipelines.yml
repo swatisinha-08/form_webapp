@@ -1,0 +1,34 @@
+trigger:
+- main
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+steps:
+- task: UsePythonVersion@0
+  inputs:
+    versionSpec: '3.x'
+    addToPath: true
+
+- script: |
+    cd webapp  # Correct directory based on your file structure
+    python -m pip install --upgrade pip
+    pip install -r requirements.txt
+    pip install pytest-cov
+  displayName: 'Install dependencies with coverage'
+
+- script: |
+    cd form_webapp  # Correct directory based on your file structure
+    PYTHONPATH=$(pwd) pytest --cov=app --cov-report=term --cov-report=xml tests/
+  displayName: 'Run unit tests with coverage'
+
+# Optional: Run Selenium tests with a headless browser (e.g., Chrome)
+- script: |
+    cd form_webapp  # Correct directory based on your file structure
+    sudo apt-get install -y chromium-chromedriver  # Install Chromium and chromedriver
+    export DISPLAY=:99  # Set the virtual display for Selenium
+    pip install selenium
+    pytest tests/test_selenium.py  # Run Selenium tests
+  displayName: 'Run Selenium tests'
+  env:
+    DISPLAY: ':99'  # Set the DISPLAY environment variable for headless testing
