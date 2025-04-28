@@ -18,7 +18,7 @@ driver = webdriver.Chrome(options=options)
 
 def test_form_submission():
     try:
-        driver.get("http://localhost:8000/")
+        driver.get("https://form-page-gcdebhh2a5d4euhz.centralindia-01.azurewebsites.net/")
 
         # Wait until the first input element is visible before interacting
         WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.ID, "firstname")))
