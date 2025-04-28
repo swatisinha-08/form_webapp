@@ -11,13 +11,33 @@ steps:
 
 - script: |
     python -m pip install --upgrade pip
-    pip install -r requirements.txt
-    pip install pytest
-    sudo apt-get update
-    sudo apt-get install -y chromium-chromedriver
-    sudo ln -s /usr/lib/chromium-browser/chromedriver /usr/bin/chromedriver || true
-  displayName: 'Install Python dependencies and ChromeDriver'
+    python -m pip install selenium==4.12.0
+    python -m pip install pytest
+    python -m pip install pytest-html
+    python -m pip install pytest-xdist
+    python -m pip install pytest-nunit
+    python -m pip install -r requirements.txt
+  displayName: 'Install dependencies and plugins'
 
 - script: |
-    pytest tests/test_selenium.py
-  displayName: 'Run Selenium Tests'
+    python -m pip list
+  displayName: 'Check installed Python packages'
+
+- script: |
+    pytest -rA --html=reports/Report.html --self-contained-html --doctest-modules --nunitxml=nunit/test-results.xml -n 5
+  displayName: 'Run Selenium Tests and Generate Reports'
+
+- task: PublishTestResults@2
+  inputs:
+    testResultsFormat: 'NUnit'
+    testResultsFiles: 'nunit/test-results.xml'
+    failTaskOnFailedTests: true
+    testRunTitle: 'Publish NUnit Test Results'
+  displayName: 'Publish NUnit Test Results'
+
+- task: PublishBuildArtifacts@1
+  inputs:
+    PathtoPublish: 'reports/Report.html'
+    ArtifactName: 'TestReports'
+    publishLocation: 'Container'
+  displayName: 'Publish Pytest HTML Report'
