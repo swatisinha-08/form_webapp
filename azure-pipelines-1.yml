@@ -12,10 +12,11 @@ steps:
 - script: |
     python -m pip install --upgrade pip
     pip install -r requirements.txt
+    pip install pytest
     sudo apt-get update
     sudo apt-get install -y chromium-chromedriver
     sudo ln -s /usr/lib/chromium-browser/chromedriver /usr/bin/chromedriver || true
-  displayName: 'Install Python and ChromeDriver'
+  displayName: 'Install Python dependencies and ChromeDriver'
 
 - script: |
     pytest tests/test_selenium.py
