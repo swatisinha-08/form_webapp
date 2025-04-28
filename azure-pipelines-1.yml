@@ -1,0 +1,24 @@
+trigger:
+- main
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+steps:
+- task: UsePythonVersion@0
+  inputs:
+    versionSpec: '3.x'
+
+- script: |
+    python -m pip install --upgrade pip
+    pip install -r requirements.txt
+    sudo apt-get update
+    sudo apt-get install -y chromium-browser
+    sudo apt-get install -y chromium-chromedriver
+    sudo ln -s /usr/bin/chromedriver /usr/local/bin/chromedriver
+    sudo ln -s /usr/bin/chromium-browser /usr/bin/google-chrome
+  displayName: 'Install dependencies and Chromium'
+
+- script: |
+    pytest tests/test_selenium.py
+  displayName: 'Run Selenium tests'
