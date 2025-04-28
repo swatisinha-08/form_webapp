@@ -11,33 +11,47 @@ steps:
 
 - script: |
     python -m pip install --upgrade pip
-    python -m pip install selenium==4.12.0
-    python -m pip install pytest
-    python -m pip install pytest-html
-    python -m pip install pytest-xdist
-    python -m pip install pytest-nunit
-    python -m pip install -r requirements.txt
-  displayName: 'Install dependencies and plugins'
+    pip install -r requirements.txt
+    pip install coverage
+  displayName: 'Install dependencies'
 
 - script: |
     python -m pip list
   displayName: 'Check installed Python packages'
 
+# Run UNIT TESTS with coverage
 - script: |
-    pytest -rA --html=reports/Report.html --self-contained-html --doctest-modules --nunitxml=nunit/test-results.xml -n 5
+    coverage run -m pytest tests/test_unit.py
+    coverage report
+    coverage html -d htmlcov
+  displayName: 'Run Unit Tests with Coverage'
+
+# Run SELENIUM TESTS
+- script: |
+    pytest tests/test_selenium.py -rA --html=reports/SeleniumReport.html --self-contained-html --nunitxml=nunit/selenium-test-results.xml -n 2
   displayName: 'Run Selenium Tests and Generate Reports'
 
+# Publish Unit Test Coverage Report
+- task: PublishBuildArtifacts@1
+  inputs:
+    PathtoPublish: 'htmlcov'
+    ArtifactName: 'CoverageReport'
+    publishLocation: 'Container'
+  displayName: 'Publish Coverage Report'
+
+# Publish Selenium HTML Report
+- task: PublishBuildArtifacts@1
+  inputs:
+    PathtoPublish: 'reports/SeleniumReport.html'
+    ArtifactName: 'SeleniumReports'
+    publishLocation: 'Container'
+  displayName: 'Publish Selenium HTML Report'
+
+# Publish NUnit Results for Selenium
 - task: PublishTestResults@2
   inputs:
     testResultsFormat: 'NUnit'
-    testResultsFiles: 'nunit/test-results.xml'
+    testResultsFiles: 'nunit/selenium-test-results.xml'
     failTaskOnFailedTests: true
-    testRunTitle: 'Publish NUnit Test Results'
+    testRunTitle: 'Publish Selenium NUnit Test Results'
   displayName: 'Publish NUnit Test Results'
-
-- task: PublishBuildArtifacts@1
-  inputs:
-    PathtoPublish: 'reports/Report.html'
-    ArtifactName: 'TestReports'
-    publishLocation: 'Container'
-  displayName: 'Publish Pytest HTML Report'
