@@ -13,7 +13,6 @@ steps:
 
 # Step 2: Install Python dependencies
 - script: |
-    cd form_webapp  # Correct directory based on your file structure
     python -m pip install --upgrade pip
     pip install -r requirements.txt
     pip install pytest-cov
@@ -21,13 +20,12 @@ steps:
 
 # Step 3: Run unit tests with coverage
 - script: |
-    cd form_webapp  # Correct directory based on your file structure
     PYTHONPATH=$(pwd) pytest --cov=app --cov-report=term --cov-report=xml tests/
   displayName: 'Run unit tests with coverage'
 
 # Step 4: Run Selenium tests with a headless browser (e.g., Chrome)
 - script: |
-    cd form_webapp  # Correct directory based on your file structure
+    cd form_webapp/tests  # Correct directory based on your file structure
     sudo apt-get update && sudo apt-get install -y chromium-chromedriver  # Install Chromium and chromedriver
     export DISPLAY=:99  # Set the virtual display for Selenium
     pip install selenium
