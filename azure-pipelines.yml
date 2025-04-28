@@ -5,23 +5,17 @@ pool:
   vmImage: 'ubuntu-latest'
 
 steps:
-# Step 1: Set up Python environment
 - task: UsePythonVersion@0
   inputs:
     versionSpec: '3.x'
     addToPath: true
 
-# Step 2: Install Python dependencies
 - script: |
     python -m pip install --upgrade pip
     pip install -r requirements.txt
     pip install pytest-cov
   displayName: 'Install dependencies with coverage'
 
-# Step 3: Run unit tests with coverage
 - script: |
     PYTHONPATH=$(pwd) pytest --cov=app --cov-report=term --cov-report=xml tests/
   displayName: 'Run unit tests with coverage'
-
-  env:
-    DISPLAY: ':99'  # Set the DISPLAY environment variable for headless testing
