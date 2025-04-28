@@ -33,6 +33,11 @@ steps:
     pytest -rA --html=reports/Report.html --self-contained-html --doctest-modules --nunitxml=nunit/test-results.xml -n 5
   displayName: 'Run Selenium Tests and Generate Reports'
 
+- script: |
+    ls -la
+    echo "Inside coverage_report directory:"
+    ls -la coverage_report || echo "coverage_report folder NOT found!"
+  displayName: 'Check if coverage report generated'
 - task: PublishTestResults@2
   inputs:
     testResultsFormat: 'NUnit'
@@ -55,3 +60,4 @@ steps:
     ArtifactName: 'CoverageReport'
     publishLocation: 'Container'
   displayName: 'Publish Coverage HTML Report'
+  continueOnError: true
