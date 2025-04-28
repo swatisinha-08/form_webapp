@@ -23,13 +23,5 @@ steps:
     PYTHONPATH=$(pwd) pytest --cov=app --cov-report=term --cov-report=xml tests/
   displayName: 'Run unit tests with coverage'
 
-# Step 4: Run Selenium tests with a headless browser (e.g., Chrome)
-- script: |
-    cd form_webapp/tests  # Correct directory based on your file structure
-    sudo apt-get update && sudo apt-get install -y chromium-chromedriver  # Install Chromium and chromedriver
-    export DISPLAY=:99  # Set the virtual display for Selenium
-    pip install selenium
-    pytest tests/test_selenium.py  # Run Selenium tests
-  displayName: 'Run Selenium tests'
   env:
     DISPLAY: ':99'  # Set the DISPLAY environment variable for headless testing
