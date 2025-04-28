@@ -24,7 +24,7 @@ steps:
     python -m pip list
   displayName: 'Check installed Python packages'
 
-# 🚀 ADDED: Run Unit Tests + Coverage
+# 🚀 Run Unit Tests + Coverage
 - script: |
     pytest tests/test_unit.py -rA --cov=form_webapp --cov-report=html:coverage_report --cov-report=xml:coverage.xml
   displayName: 'Run Unit Tests with Coverage'
@@ -48,10 +48,10 @@ steps:
     publishLocation: 'Container'
   displayName: 'Publish Pytest HTML Report'
 
-# 🚀 ADDED: Publish Coverage Report as Artifact
+# 🚀 Publish Coverage Report (fixed)
 - task: PublishBuildArtifacts@1
   inputs:
-    PathtoPublish: 'coverage_report/Coverage_report.html'
+    PathtoPublish: 'coverage_report'
     ArtifactName: 'CoverageReport'
     publishLocation: 'Container'
   displayName: 'Publish Coverage HTML Report'
