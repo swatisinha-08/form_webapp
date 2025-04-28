@@ -24,13 +24,10 @@ steps:
     python -m pip list
   displayName: 'Check installed Python packages'
 
-# 🚀 Run Unit Tests with Coverage
+# 🚀 ADDED: Run Unit Tests + Coverage
 - script: |
-    pytest tests/test_unit.py -rA \
-      --html=reports/UnitTestReport.html --self-contained-html \
-      --nunitxml=nunit/unit-test-results.xml -n 2 \
-      --cov=your_flask_app_folder --cov-report=html:coverage_report
-  displayName: 'Run Unit Tests with Coverage and Generate Reports'
+    pytest tests/test_unit.py -rA --cov=form_webapp --cov-report=html:coverage_report --cov-report=xml:coverage.xml
+  displayName: 'Run Unit Tests with Coverage'
 
 - script: |
     pytest -rA --html=reports/Report.html --self-contained-html --doctest-modules --nunitxml=nunit/test-results.xml -n 5
@@ -39,11 +36,9 @@ steps:
 - task: PublishTestResults@2
   inputs:
     testResultsFormat: 'NUnit'
-    testResultsFiles: |
-      nunit/unit-test-results.xml
-      nunit/test-results.xml
+    testResultsFiles: 'nunit/test-results.xml'
     failTaskOnFailedTests: true
-    testRunTitle: 'Publish All Test Results'
+    testRunTitle: 'Publish NUnit Test Results'
   displayName: 'Publish NUnit Test Results'
 
 - task: PublishBuildArtifacts@1
@@ -51,8 +46,9 @@ steps:
     PathtoPublish: 'reports'
     ArtifactName: 'TestReports'
     publishLocation: 'Container'
-  displayName: 'Publish Pytest HTML Reports'
+  displayName: 'Publish Pytest HTML Report'
 
+# 🚀 ADDED: Publish Coverage Report as Artifact
 - task: PublishBuildArtifacts@1
   inputs:
     PathtoPublish: 'coverage_report'
