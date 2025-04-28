@@ -53,11 +53,3 @@ steps:
     publishLocation: 'Container'
   displayName: 'Publish Pytest HTML Report'
 
-# 🚀 Publish Coverage Report (fixed)
-- task: PublishBuildArtifacts@1
-  inputs:
-    PathtoPublish: 'coverage_report'
-    ArtifactName: 'CoverageReport'
-    publishLocation: 'Container'
-  displayName: 'Publish Coverage HTML Report'
-  continueOnError: true
