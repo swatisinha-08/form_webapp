@@ -13,7 +13,7 @@ steps:
 
 # Step 2: Install Python dependencies
 - script: |
-    cd webapp  # Correct directory based on your file structure
+    cd form_webapp  # Correct directory based on your file structure
     python -m pip install --upgrade pip
     pip install -r requirements.txt
     pip install pytest-cov
