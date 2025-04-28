@@ -43,7 +43,7 @@ steps:
 
 - task: PublishBuildArtifacts@1
   inputs:
-    PathtoPublish: 'reports/report.html'
+    PathtoPublish: 'reports/Report.html'
     ArtifactName: 'TestReports'
     publishLocation: 'Container'
   displayName: 'Publish Pytest HTML Report'
@@ -51,7 +51,7 @@ steps:
 # 🚀 ADDED: Publish Coverage Report as Artifact
 - task: PublishBuildArtifacts@1
   inputs:
-    PathtoPublish: 'coverage_report'
+    PathtoPublish: 'coverage_report/Coverage_report.html'
     ArtifactName: 'CoverageReport'
     publishLocation: 'Container'
   displayName: 'Publish Coverage HTML Report'
