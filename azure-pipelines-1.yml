@@ -4,6 +4,11 @@ trigger:
 pool:
   vmImage: 'ubuntu-latest'
 
+variables:
+  SONAR_PROJECT_KEY: 'swatisinha8403_Pipeline'
+  SONAR_ORGANIZATION: 'swatisinha8403'
+  SONAR_TOKEN: $(SONAR_TOKEN)  # Define this in your Azure DevOps pipeline secrets
+
 steps:
 - task: UsePythonVersion@0
   inputs:
@@ -24,6 +29,18 @@ steps:
     python -m pip list
   displayName: 'Check installed Python packages'
 
+# 🔍 SonarCloud - Begin Analysis
+- task: SonarCloudPrepare@2
+  inputs:
+    SonarCloud: 'SonarCloud'
+    organization: '$(SONAR_ORGANIZATION)'
+    scannerMode: 'CLI'
+    configMode: 'manual'
+    cliProjectKey: '$(SONAR_PROJECT_KEY)'
+    cliProjectName: 'Pipeline'
+    extraProperties: |
+      sonar.python.coverage.reportPaths=coverage.xml
+
 # 🚀 Run Unit Tests + Coverage
 - script: |
     pytest tests/test_unit.py -rA --cov=form_webapp --cov-report=html:coverage_report --cov-report=xml:coverage.xml
@@ -33,11 +50,22 @@ steps:
     pytest -rA --html=reports/Report.html --self-contained-html --doctest-modules --nunitxml=nunit/test-results.xml -n 5
   displayName: 'Run Selenium Tests and Generate Reports'
 
+# 🔎 SonarCloud - Run Analysis
+- task: SonarCloudAnalyze@2
+  displayName: 'Run SonarCloud Code Analysis'
+
+# 📢 SonarCloud - Publish Results
+- task: SonarCloudPublish@2
+  inputs:
+    pollingTimeoutSec: '300'
+  displayName: 'Publish SonarCloud Results'
+
 - script: |
     ls -la
     echo "Inside coverage_report directory:"
     ls -la coverage_report || echo "coverage_report folder NOT found!"
   displayName: 'Check if coverage report generated'
+
 - task: PublishTestResults@2
   inputs:
     testResultsFormat: 'NUnit'
@@ -52,4 +80,3 @@ steps:
     ArtifactName: 'TestReports'
     publishLocation: 'Container'
   displayName: 'Publish Pytest HTML Report'
-
