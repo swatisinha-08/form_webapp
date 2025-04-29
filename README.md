@@ -26,4 +26,5 @@ This project is a simple web application with a form and corresponding tests. Be
 
 ![image](https://github.com/user-attachments/assets/b03ba0b1-6177-42ca-85e6-9f13fd5d90e3)
 
+![image](https://github.com/user-attachments/assets/0e5cea07-edcc-4359-9ca2-4df9809d187e)
 
