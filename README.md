@@ -20,11 +20,7 @@ This project is a simple web application with a form and corresponding tests. Be
 ## 📄 requirements.txt
 - Lists Python dependencies required to run the project.
 
-## 📄 README.md
-- Contains project description and file explanations.
 
-## 📁 .github/
-- Contains GitHub-related configuration files and workflows (if any).
 
 ---
 
