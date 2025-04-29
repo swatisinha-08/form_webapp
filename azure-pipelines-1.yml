@@ -7,7 +7,7 @@ pool:
 variables:
   SONAR_PROJECT_KEY: 'swatisinha8403_Pipeline'
   SONAR_ORGANIZATION: 'swatisinha8403'
-  SONAR_TOKEN: $(SONAR_TOKEN)  # Define this in your Azure DevOps pipeline secrets
+  SONAR_TOKEN: SonarCloud  # Define this in your Azure DevOps pipeline secrets
 
 steps:
 - task: UsePythonVersion@0
@@ -33,13 +33,15 @@ steps:
 - task: SonarCloudPrepare@2
   inputs:
     SonarCloud: 'SonarCloud'
-    organization: '$(SONAR_ORGANIZATION)'
+    organization: 'swatisinha8403'
     scannerMode: 'CLI'
     configMode: 'manual'
-    cliProjectKey: '$(SONAR_PROJECT_KEY)'
+    cliProjectKey: 'swatisinha8403_Pipeline'
     cliProjectName: 'Pipeline'
     extraProperties: |
       sonar.python.coverage.reportPaths=coverage.xml
+      sonar.verbose=true
+
 
 # 🚀 Run Unit Tests + Coverage
 - script: |
