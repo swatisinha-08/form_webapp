@@ -7,7 +7,7 @@ pool:
 variables:
   SONAR_PROJECT_KEY: 'swatisinha8403_Pipeline'
   SONAR_ORGANIZATION: 'swatisinha8403'
-  SONAR_TOKEN: SonarCloud  # Define this in your Azure DevOps pipeline secrets
+  # SONAR_TOKEN must be set as a secret pipeline variable in Azure DevOps
 
 steps:
 - task: UsePythonVersion@0
@@ -29,19 +29,24 @@ steps:
     python -m pip list
   displayName: 'Check installed Python packages'
 
-# 🔍 SonarCloud - Begin Analysis
-- task: SonarCloudPrepare@2
+# 🔐 Expose secret SONAR_TOKEN to environment (required for CLI mode)
+- script: echo "##vso[task.setvariable variable=SONAR_TOKEN]$(SONAR_TOKEN)"
+  displayName: 'Expose SONAR_TOKEN as variable'
+
+# 🔍 SonarCloud - Prepare Analysis Configuration
+- task: SonarCloudPrepare@1
   inputs:
-    SonarCloud: 'SonarCloud'
-    organization: 'swatisinha8403'
+    SonarCloud: 'SonarCloud'  # must match your service connection name
+    organization: '$(SONAR_ORGANIZATION)'
     scannerMode: 'CLI'
     configMode: 'manual'
-    cliProjectKey: 'swatisinha8403_Pipeline'
+    cliProjectKey: '$(SONAR_PROJECT_KEY)'
     cliProjectName: 'Pipeline'
     extraProperties: |
       sonar.python.coverage.reportPaths=coverage.xml
       sonar.verbose=true
-
+  env:
+    SONAR_TOKEN: $(SONAR_TOKEN)
 
 # 🚀 Run Unit Tests + Coverage
 - script: |
@@ -52,12 +57,14 @@ steps:
     pytest -rA --html=reports/Report.html --self-contained-html --doctest-modules --nunitxml=nunit/test-results.xml -n 5
   displayName: 'Run Selenium Tests and Generate Reports'
 
-# 🔎 SonarCloud - Run Analysis
-- task: SonarCloudAnalyze@2
+# 🔎 SonarCloud - Analyze
+- task: SonarCloudAnalyze@1
   displayName: 'Run SonarCloud Code Analysis'
+  env:
+    SONAR_TOKEN: $(SONAR_TOKEN)
 
 # 📢 SonarCloud - Publish Results
-- task: SonarCloudPublish@2
+- task: SonarCloudPublish@1
   inputs:
     pollingTimeoutSec: '300'
   displayName: 'Publish SonarCloud Results'
